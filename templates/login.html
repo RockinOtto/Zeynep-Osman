@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="login-body">
+    <div class="background-hearts"></div>
+
+    <div class="login-container box-glass">
+        <h2>Hoşgeldin Aşkım ❤️</h2>
+        <p>Devam etmek için giriş yapmalısın.</p>
+
+        {% if error %}
+        <p class="error-msg">{{ error }}</p>
+        {% endif %}
+
+        <form action="/login" method="post">
+            <div class="input-group">
+                <input type="text" name="username" placeholder="Adın (Zeynep / Osman)" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="Şifremiz (Tarih)" required>
+            </div>
+            <button type="submit" class="login-btn">Giriş Yap</button>
+        </form>
+    </div>
+</body>
+
+</html>
