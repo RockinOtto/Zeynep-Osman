@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header>
+    <h1>Zeynep <span class="heart">❤️</span> Osman</h1>
+    <p class="subtitle">Anılarımız</p>
+</header>
+
+<section class="gallery-section">
+    <!-- Fotoğraf Yükleme Formu -->
+    <div class="upload-area box-glass">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <div class="input-container">
+                <input type="month" name="upload_date" value="{{ current_date }}" class="date-input">
+            </div>
+            <label for="photo-upload" class="custom-file-upload">
+                <i class="icon">📷</i> Fotoğraf Seç
+            </label>
+            <input id="photo-upload" type="file" name="file" onchange="this.form.submit()">
+        </form>
+        <p class="upload-hint">Seçili aya fotoğraf yüklenir</p>
+    </div>
+
+    <div class="gallery-wrapper">
+        {% for month, filenames in photos.items() %}
+        <div class="month-section">
+            <h3 class="month-title" style="color: white; margin-top: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">{{
+                month }}</h3>
+            <div class="gallery-grid">
+                {% for img in filenames %}
+                <div class="photo-card">
+                    <img src="{{ url_for('static', filename='photos/' + img) }}" alt="Anı">
+                    <!-- İndirme Butonu -->
+                    <a href="{{ url_for('static', filename='photos/' + img) }}" download class="download-btn"
+                        title="İndir">
+                        ⬇️
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header>
+    <h1>Zeynep <span class="heart">❤️</span> Osman</h1>
+    <p class="subtitle">Birlikte geçen her saniye çok özel...</p>
+</header>
+
+<section class="counter-section box-glass">
+    <h2>Aşk Sayacımız</h2>
+    <div id="counter" class="counter-grid">
+        <div class="time-box">
+            <span id="days">0</span>
+            <span class="label">Gün</span>
+        </div>
+        <div class="time-box">
+            <span id="hours">0</span>
+            <span class="label">Saat</span>
+        </div>
+        <div class="time-box">
+            <span id="minutes">0</span>
+            <span class="label">Dakika</span>
+        </div>
+        <div class="time-box">
+            <span id="seconds">0</span>
+            <span class="label">Saniye</span>
+        </div>
+    </div>
+    <p class="start-date">13 Nisan 2025'ten beri...</p>
+</section>
+{% endblock %}

@@ -1,0 +1,463 @@
+/* Modern ve Romantik Tasarım */
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #ff4d6d;
+    --secondary-color: #ff8fa3;
+    --bg-gradient: linear-gradient(135deg, #fff0f3 0%, #ffccd5 100%);
+    --glass-bg: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    --text-color: #590d22;
+    --card-bg: white;
+    --header-text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Gece Modu Değişkenleri */
+body.dark-mode {
+    --primary-color: #ff4d6d;
+    --secondary-color: #ff8fa3;
+    --bg-gradient: linear-gradient(135deg, #2b2b2b 0%, #1a1a1a 100%);
+    --glass-bg: rgba(40, 40, 40, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-color: #ffe5ec;
+    --card-bg: #333;
+    --header-text-shadow: 2px 2px 4px rgba(255, 77, 109, 0.3);
+}
+
+/* Gece Modu Butonu */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    /* Kaydırma ile hareket etsin, fixed kalsın */
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    font-size: 1.5rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: rotate(15deg) scale(1.1);
+    background: var(--primary-color);
+    color: white;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text-color);
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* Yatay kaymayı engelle */
+}
+
+/* Mobil için input font boyutu (iOS zoom engelleme) */
+input,
+select,
+textarea {
+    font-size: 16px !important;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    /* padding-top: 80px;  Navbar artık sabit olmadığı için gerek yok */
+}
+
+/* Navbar */
+.navbar {
+    position: relative;
+    /* Fixed yerine Relative yapıldı */
+    /* top, left, transform iptal edildi veya manuel ayarlandı */
+    width: 100%;
+    /* 90% yerine 100% yapıp margin ile kontrol edelim */
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+    /* Üst boşluk sıfırlandı, alt boşluk 20px */
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1.1rem;
+    padding: 5px 10px;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.theme-toggle-nav {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: transform 0.3s;
+}
+
+.theme-toggle-nav:hover {
+    transform: rotate(20deg) scale(1.1);
+}
+
+/* Header */
+header h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3.5rem;
+    margin-bottom: 0.2rem;
+    color: var(--primary-color);
+    /* Updated for better variable usage */
+    text-shadow: 2px 2px 0px white, 4px 4px 8px rgba(0, 0, 0, 0.1);
+    /* Stroke effect for readability */
+}
+
+/* Ay Başlıkları İçin */
+.month-title {
+    color: var(--text-color) !important;
+    /* Ensure it follows theme */
+    text-shadow: 1px 1px 0px var(--glass-bg), 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.heart {
+    color: red;
+    display: inline-block;
+    animation: heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+}
+
+.logout-link {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    border: 1px solid var(--primary-color);
+    padding: 5px 15px;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.logout-link:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Glassmorphism Kutular */
+.box-glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    margin-bottom: 2rem;
+}
+
+/* Sayaç */
+.counter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.time-box {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.time-box span:first-child {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.time-box .label {
+    font-size: 0.9rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.start-date {
+    margin-top: 1rem;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* Galeri */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.photo-card {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.photo-card:hover {
+    transform: scale(1.03);
+}
+
+.photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Download Butonu */
+.download-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    /* Flexbox ile ortalama */
+    align-items: center;
+    /* Dikey ortalama */
+    justify-content: center;
+    /* Yatay ortalama */
+    font-size: 1.2rem;
+    text-decoration: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, background 0.2s;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.photo-card:hover .download-btn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.download-btn:hover {
+    background: white;
+    transform: translateY(0) scale(1.1);
+}
+
+/* Upload Butonu */
+.upload-area {
+    margin-bottom: 20px;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 12px 24px;
+    cursor: pointer;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.custom-file-upload:hover {
+    background: #c9184a;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.date-input {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: var(--text-color);
+    padding: 8px 15px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.date-input:focus {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: var(--primary-color);
+}
+
+.input-container {
+    margin-bottom: 10px;
+}
+
+.upload-hint {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+/* Login Ekranı */
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 90%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.input-group input:focus {
+    background: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(255, 77, 109, 0.2);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.login-btn:hover {
+    background: #c9184a;
+}
+
+.error-msg {
+    color: #d00000;
+    background: rgba(255, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 2.5rem;
+    }
+
+    .counter-grid {
+        gap: 0.5rem;
+    }
+
+    .time-box span:first-child {
+        font-size: 1.5rem;
+    }
+
+    .time-box {
+        padding: 0.5rem;
+    }
+
+    /* Mobilde download butonu hep açık olsun */
+    .download-btn {
+        opacity: 1;
+        transform: translateY(0);
+        bottom: 5px;
+        right: 5px;
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+    }
+}
+
+/* Footer */
+.site-footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    width: 100%;
+}

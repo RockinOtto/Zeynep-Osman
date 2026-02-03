@@ -1,0 +1,196 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header>
+    <h1>Zeynep <span class="heart">❤️</span> Osman</h1>
+    <p class="subtitle">Bugün nasıl hissediyoruz?</p>
+</header>
+
+<div class="mood-container">
+    {% for user, data in moods.items() %}
+    <div class="mood-card box-glass" onclick="openMoodModal('{{ user }}')">
+        <h3>{{ user }}</h3>
+        <div class="mood-icon">
+            {% if data.level == 1 %}🤬
+            {% elif data.level == 2 %}😟
+            {% elif data.level == 3 %}😐
+            {% elif data.level == 4 %}🙂
+            {% else %}😍
+            {% endif %}
+        </div>
+        <div class="mood-bar">
+            <div class="mood-fill" style="width: {{ data.level * 20 }}%; background-color: var(--primary-color);"></div>
+        </div>
+        <p class="last-updated">Son Güncelleme: {{ data.last_updated }}</p>
+        <button class="update-btn">Durum Güncelle</button>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal -->
+<div id="moodModal" class="modal">
+    <div class="modal-content box-glass">
+        <span class="close-modal" onclick="closeMoodModal()">&times;</span>
+        <h2 id="modalUserTitle">Durum Güncelle</h2>
+
+        <form action="/update_mood" method="post">
+            <input type="hidden" name="user" id="modalUserInput">
+
+            <div class="mood-selector">
+                <label>Hissiyatın (1-5):</label>
+                <input type="range" name="mood_level" min="1" max="5" value="5" oninput="updateMoodPreview(this.value)">
+                <span id="moodPreview">😍</span>
+            </div>
+
+            <button type="submit" class="save-btn">Kaydet</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .mood-container {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .mood-card {
+        flex: 1;
+        min-width: 250px;
+        max-width: 300px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .mood-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .mood-icon {
+        font-size: 5rem;
+        margin: 1rem 0;
+    }
+
+    .mood-bar {
+        width: 100%;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .mood-fill {
+        height: 100%;
+        transition: width 0.5s ease;
+    }
+
+    .last-updated {
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+
+    .update-btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 20px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background: white;
+        /* Glass effect zaten box-glass'ta var ama override gerekebilir */
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 2rem;
+        cursor: pointer;
+    }
+
+    .mood-selector {
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .mood-selector input {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    #moodPreview {
+        font-size: 3rem;
+        display: block;
+    }
+
+    .password-group input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        margin-top: 5px;
+    }
+
+    .save-btn {
+        width: 100%;
+        padding: 10px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        margin-top: 20px;
+        font-size: 1.1rem;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function openMoodModal(user) {
+        document.getElementById('moodModal').style.display = 'flex';
+        document.getElementById('modalUserTitle').innerText = user + " Durum Güncelle";
+        document.getElementById('modalUserInput').value = user;
+    }
+
+    function closeMoodModal() {
+        document.getElementById('moodModal').style.display = 'none';
+    }
+
+    function updateMoodPreview(val) {
+        const icons = ['🤬', '😟', '😐', '🙂', '😍'];
+        document.getElementById('moodPreview').innerText = icons[val - 1];
+    }
+
+    // Modal dışına tıklayınca kapat
+    window.onclick = function (event) {
+        if (event.target == document.getElementById('moodModal')) {
+            closeMoodModal();
+        }
+    }
+</script>
+
+{% endblock %}
