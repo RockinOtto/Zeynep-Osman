@@ -461,3 +461,225 @@ input[type="file"] {
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     width: 100%;
 }
+
+/* ===== BULUŞMA TAKVİMİ ===== */
+.meeting-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+/* Geri Sayım */
+.meeting-countdown {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.countdown-item {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    min-width: 80px;
+    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+}
+
+.countdown-item span:first-child {
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+}
+
+.countdown-item .label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.meeting-message {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+    font-style: italic;
+}
+
+/* Takvim */
+.calendar-container {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+body.dark-mode .calendar-container {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.calendar-header h3 {
+    color: var(--text-color);
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.calendar-nav {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.calendar-nav:hover {
+    background: #c9184a;
+    transform: scale(1.1);
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.calendar-weekdays span {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    padding: 5px;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day {
+    text-align: center;
+    padding: 10px 5px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    cursor: default;
+}
+
+.calendar-day.empty {
+    background: transparent;
+}
+
+.calendar-day:not(.empty):hover {
+    background: rgba(255, 77, 109, 0.1);
+}
+
+.calendar-day.today {
+    background: rgba(255, 77, 109, 0.2);
+    font-weight: 700;
+    border: 2px solid var(--primary-color);
+}
+
+.calendar-day.meeting-day {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    font-weight: 700;
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Tarih Seçici */
+.meeting-date-picker {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.meeting-date-picker label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.meeting-date-picker input[type="date"] {
+    padding: 10px 15px;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    background: white;
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+}
+
+body.dark-mode .meeting-date-picker input[type="date"] {
+    background: #444;
+    color: white;
+}
+
+.save-meeting-btn {
+    padding: 10px 20px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.save-meeting-btn:hover {
+    background: #c9184a;
+    transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .meeting-countdown {
+        gap: 0.75rem;
+    }
+
+    .countdown-item {
+        padding: 0.75rem 1rem;
+        min-width: 60px;
+    }
+
+    .countdown-item span:first-child {
+        font-size: 1.5rem;
+    }
+
+    .calendar-day {
+        padding: 8px 3px;
+        font-size: 0.85rem;
+    }
+
+    .meeting-date-picker {
+        flex-direction: column;
+    }
+}

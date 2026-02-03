@@ -26,6 +26,11 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+# Buluşma Takvimi Sayfası
+@app.route('/meeting')
+def meeting():
+    return render_template('meeting.html')
+
 # Galeri Sayfası
 @app.route('/gallery')
 def gallery():

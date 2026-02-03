@@ -1,0 +1,288 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header>
+    <h1>Zeynep <span class="heart">❤️</span> Osman</h1>
+    <p class="subtitle">Bir sonraki buluşmamız...</p>
+</header>
+
+<!-- Konfeti Container -->
+<div id="confettiContainer"></div>
+
+<section class="meeting-section box-glass">
+    <h2>💕 Buluşma Takvimimiz</h2>
+
+    <!-- Geri Sayım - Sadece Gün -->
+    <div class="meeting-countdown" id="meetingCountdown">
+        <div class="countdown-item big-countdown">
+            <span id="meetingDays">0</span>
+            <span class="label">Gün Kaldı</span>
+        </div>
+    </div>
+    <p class="meeting-message" id="meetingMessage">Buluşmaya kalan süre</p>
+
+    <!-- Takvim -->
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button class="calendar-nav" id="prevMonth">◀</button>
+            <h3 id="calendarTitle">Şubat 2026</h3>
+            <button class="calendar-nav" id="nextMonth">▶</button>
+        </div>
+        <div class="calendar-weekdays">
+            <span>Pzt</span>
+            <span>Sal</span>
+            <span>Çar</span>
+            <span>Per</span>
+            <span>Cum</span>
+            <span>Cmt</span>
+            <span>Paz</span>
+        </div>
+        <div class="calendar-days" id="calendarDays">
+            <!-- JavaScript ile doldurulacak -->
+        </div>
+    </div>
+
+    <!-- Buluşma Tarihi Ayarlama -->
+    <div class="meeting-date-picker">
+        <label for="meetingDate">Buluşma Tarihimiz:</label>
+        <input type="date" id="meetingDate" name="meetingDate">
+        <button class="save-meeting-btn" id="saveMeetingDate">💝 Kaydet</button>
+    </div>
+</section>
+
+<style>
+    /* Büyük geri sayım */
+    .big-countdown {
+        padding: 2rem 3rem !important;
+        min-width: 150px !important;
+    }
+
+    .big-countdown span:first-child {
+        font-size: 4rem !important;
+    }
+
+    .big-countdown .label {
+        font-size: 1rem !important;
+    }
+
+    /* Konfeti */
+    #confettiContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+        overflow: hidden;
+    }
+
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        opacity: 0;
+        animation: confettiFall 4s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+        0% {
+            opacity: 1;
+            transform: translateY(-100px) rotate(0deg);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(100vh) rotate(720deg);
+        }
+    }
+
+    /* Buluşma günü özel mesaj */
+    .meeting-today {
+        font-size: 1.5rem !important;
+        color: var(--primary-color);
+        animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+    }
+</style>
+
+<script>
+    // Buluşma tarihi (localStorage'dan al veya varsayılan)
+    let meetingDate = localStorage.getItem('meetingDate') || '';
+    let confettiTriggered = false;
+
+    const monthNames = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+        'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+
+    // Konfeti oluştur
+    function createConfetti() {
+        const container = document.getElementById('confettiContainer');
+        const colors = ['#ff4d6d', '#ff8fa3', '#ffccd5', '#fff0f3', '#ffd700', '#ff69b4', '#ff1493'];
+        const shapes = ['❤️', '💕', '💖', '✨', '🎉', '💗'];
+
+        for (let i = 0; i < 100; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (3 + Math.random() * 2) + 's';
+
+                // Rastgele şekil veya renk
+                if (Math.random() > 0.5) {
+                    confetti.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+                    confetti.style.fontSize = (15 + Math.random() * 20) + 'px';
+                } else {
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    confetti.style.width = (8 + Math.random() * 10) + 'px';
+                    confetti.style.height = (8 + Math.random() * 10) + 'px';
+                }
+
+                container.appendChild(confetti);
+
+                // Temizle
+                setTimeout(() => confetti.remove(), 5000);
+            }, i * 30);
+        }
+    }
+
+    // Takvimi render et
+    function renderCalendar() {
+        const calendarDays = document.getElementById('calendarDays');
+        const calendarTitle = document.getElementById('calendarTitle');
+
+        calendarTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+        // Ayın ilk günü ve toplam gün sayısı
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+        // Pazartesi'den başlat (0=Paz, 1=Pzt -> 0=Pzt olacak şekilde ayarla)
+        const startDay = firstDay === 0 ? 6 : firstDay - 1;
+
+        let html = '';
+
+        // Boş günler
+        for (let i = 0; i < startDay; i++) {
+            html += '<span class="calendar-day empty"></span>';
+        }
+
+        // Günler
+        const today = new Date();
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const isToday = (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear());
+            const isMeeting = (dateStr === meetingDate);
+
+            let classes = 'calendar-day';
+            if (isToday) classes += ' today';
+            if (isMeeting) classes += ' meeting-day';
+
+            html += `<span class="${classes}" data-date="${dateStr}">${day}${isMeeting ? ' ❤️' : ''}</span>`;
+        }
+
+        calendarDays.innerHTML = html;
+    }
+
+    // Geri sayımı güncelle
+    function updateMeetingCountdown() {
+        const messageEl = document.getElementById('meetingMessage');
+        const daysEl = document.getElementById('meetingDays');
+
+        if (!meetingDate) {
+            messageEl.textContent = 'Henüz buluşma tarihi belirlenmedi 💭';
+            messageEl.className = 'meeting-message';
+            daysEl.textContent = '?';
+            return;
+        }
+
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        const meeting = new Date(meetingDate + 'T00:00:00');
+        const diff = meeting - now;
+        const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+        const meetingDateObj = new Date(meetingDate);
+        const dayName = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'][meetingDateObj.getDay()];
+        const monthName = monthNames[meetingDateObj.getMonth()];
+
+        if (days <= 0) {
+            // Buluşma günü geldi!
+            daysEl.textContent = '🎉';
+            messageEl.innerHTML = '💕 BULUŞMA GÜNÜ GELDİ! 💕';
+            messageEl.className = 'meeting-message meeting-today';
+
+            // Konfeti animasyonu (sadece bir kez)
+            if (!confettiTriggered) {
+                confettiTriggered = true;
+                createConfetti();
+                // Her 5 saniyede konfeti
+                setInterval(createConfetti, 8000);
+            }
+        } else if (days === 1) {
+            daysEl.textContent = '1';
+            messageEl.textContent = `Yarın buluşuyoruz! 🥰 (${meetingDateObj.getDate()} ${monthName} ${dayName})`;
+            messageEl.className = 'meeting-message';
+        } else {
+            daysEl.textContent = days;
+            messageEl.textContent = `${meetingDateObj.getDate()} ${monthName} ${dayName} günü buluşuyoruz! 💕`;
+            messageEl.className = 'meeting-message';
+        }
+    }
+
+    // Tarihi kaydet
+    document.getElementById('saveMeetingDate').addEventListener('click', function () {
+        const dateInput = document.getElementById('meetingDate').value;
+        if (dateInput) {
+            meetingDate = dateInput;
+            confettiTriggered = false; // Reset confetti
+            localStorage.setItem('meetingDate', meetingDate);
+            renderCalendar();
+            updateMeetingCountdown();
+            alert('Buluşma tarihi kaydedildi! 💕');
+        }
+    });
+
+    // Önceki/Sonraki ay
+    document.getElementById('prevMonth').addEventListener('click', function () {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        renderCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', function () {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        renderCalendar();
+    });
+
+    // Başlat
+    if (meetingDate) {
+        document.getElementById('meetingDate').value = meetingDate;
+    }
+    renderCalendar();
+    updateMeetingCountdown();
+    setInterval(updateMeetingCountdown, 60000); // Her dakika güncelle
+</script>
+{% endblock %}

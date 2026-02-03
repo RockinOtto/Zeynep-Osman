@@ -20,6 +20,8 @@
             <li><a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' }}">Sayaç</a></li>
             <li><a href="{{ url_for('gallery') }}" class="{{ 'active' if request.endpoint == 'gallery' }}">Galeri</a>
             </li>
+            <li><a href="{{ url_for('meeting') }}" class="{{ 'active' if request.endpoint == 'meeting' }}">Buluşma</a>
+            </li>
             <li><a href="{{ url_for('mood') }}" class="{{ 'active' if request.endpoint == 'mood' }}">Ruh Hali</a></li>
         </ul>
         <button class="theme-toggle-nav" onclick="toggleTheme()" title="Mod Değiştir">
