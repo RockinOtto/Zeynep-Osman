@@ -8,8 +8,9 @@ app.secret_key = 'supersecretkey'  # Flash mesajları için gerekli
 app.config['UPLOAD_FOLDER'] = 'static/photos'  # Fotoğraflar static/photos klasörüne yüklenecek
 app.config['MOOD_FILE'] = 'moods.json'
 
-# İzin verilen dosya uzantıları
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+# İzin verilen dosya uzantıları (fotoğraf + video + iphone heic/heif)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'mp4', 'mov', 'avi', 'webm', 'mkv', '3gp', 'heic', 'heif'}
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024 * 1024  # 2 GB toplu yükleme kapasitesi
 
 # Türkçe Ay İsimleri Haritası
 MONTH_MAPPING = {
@@ -26,101 +27,76 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
-# Buluşma Takvimi Sayfası
+# Buluşma Takvimi Sayfası (Aradayız - Gizli)
 @app.route('/meeting')
 def meeting():
-    return render_template('meeting.html')
+    return redirect(url_for('index'))
 
-# Galeri Sayfası
+# Galeri Sayfası (Tüm anılar tek ve toplu galeri)
 @app.route('/gallery')
 def gallery():
-    # Şu anki tarihi YYYY-MM formatında al (Date picker varsayılan değeri için)
-    now = datetime.now()
-    current_date = f"{now.year}-{now.month:02d}"
+    all_media = []
+    VIDEO_EXTS = {'mp4', 'mov', 'avi', 'webm', 'mkv', '3gp'}
+    upload_dir = app.config['UPLOAD_FOLDER']
 
-    # Klasördeki fotoğrafları aylara göre listele
-    photos = {}
-    if os.path.exists(app.config['UPLOAD_FOLDER']):
-        # Klasörleri ters sırala (En yeni tarih en üstte olsun: 2026-01 > 2025-12)
-        sorted_months = sorted(os.listdir(app.config['UPLOAD_FOLDER']), reverse=True)
-        
-        for folder_name in sorted_months:
-            month_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
-            if os.path.isdir(month_path):
-                # Ekranda görünecek isim (Sadece 'Ocak', 'Aralık' vb. kısmı al)
-                # Format: YYYY-MM-AyAdi -> Split ile son parçayı al
-                parts = folder_name.split('-')
-                display_name = parts[-1] if len(parts) > 2 else folder_name
-                
-                month_images = []
-                for filename in os.listdir(month_path):
-                    if allowed_file(filename):
-                        # Dosya yolunu 'YYYY-MM-Ay/dosya.jpg' formatında sakla
-                        relative_path = os.path.join(folder_name, filename).replace('\\', '/')
-                        month_images.append(relative_path)
-                
-                if month_images:
-                    photos[display_name] = month_images
-    
-    return render_template('gallery.html', photos=photos, current_date=current_date)
+    if os.path.exists(upload_dir):
+        for root, _, files in os.walk(upload_dir):
+            for file in files:
+                if allowed_file(file):
+                    abs_path = os.path.join(root, file)
+                    rel_path = os.path.relpath(abs_path, upload_dir).replace('\\', '/')
+                    ext = file.rsplit('.', 1)[-1].lower() if '.' in file else ''
+                    is_video = ext in VIDEO_EXTS
+                    try:
+                        mtime = os.path.getmtime(abs_path)
+                    except OSError:
+                        mtime = 0
 
-# Fotoğraf Yükleme
+                    all_media.append({
+                        'path': rel_path,
+                        'name': file,
+                        'is_video': is_video,
+                        'mtime': mtime
+                    })
+
+        # Tarihe / eklenme sırasına göre en yeni olanlar önce gelecek şekilde sırala
+        all_media.sort(key=lambda x: (x['mtime'], x['name']), reverse=True)
+
+    return render_template('gallery.html', all_media=all_media)
+
+
+# Fotoğraf & Video Toplu Yükleme (Telefondan kolay yükleme için)
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    if 'file' not in request.files:
+    files = request.files.getlist('files')
+    if not files or (len(files) == 1 and files[0].filename == ''):
+        files = request.files.getlist('file')
+
+    if not files or (len(files) == 1 and files[0].filename == ''):
         return redirect(url_for('gallery'))
-    
-    file = request.files['file']
-    upload_date = request.form.get('upload_date') # Formdan tarihi al
-    
-    if file.filename == '':
-        return redirect(url_for('gallery'))
-    
-    if file and allowed_file(file.filename):
-        # Eğer formdan tarih geldiyse onu kullan, yoksa şu anı kullan
-        if upload_date:
-            try:
-                year, month = map(int, upload_date.split('-'))
-            except ValueError:
-                now = datetime.now()
-                year, month = now.year, now.month
-        else:
-            now = datetime.now()
-            year, month = now.year, now.month
-            
-        month_name = MONTH_MAPPING.get(month, 'Genel')
-        
-        # Format: YYYY-MM-AyAdi (Örn: 2026-02-Şubat)
-        folder_name = f"{year}-{month:02d}-{month_name}"
-        
-        # Ay klasörünü oluştur (yoksa)
-        target_dir = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
-        if not os.path.exists(target_dir):
-            os.makedirs(target_dir)
-            
-        filename = file.filename
-        file.save(os.path.join(target_dir, filename))
-        return redirect(url_for('gallery'))
+
+    upload_dir = app.config['UPLOAD_FOLDER']
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
+
+    for f in files:
+        if f and f.filename != '' and allowed_file(f.filename):
+            filename = f.filename
+            # Dosya adı çakışmasını önle
+            base, ext = os.path.splitext(filename)
+            dest_name = filename
+            counter = 1
+            while os.path.exists(os.path.join(upload_dir, dest_name)):
+                dest_name = f"{base}_{counter}{ext}"
+                counter += 1
+            f.save(os.path.join(upload_dir, dest_name))
 
     return redirect(url_for('gallery'))
 
-# Ruh Hali Sayfası
+# Ruh Hali Sayfası (Aradayız - Gizli)
 @app.route('/mood')
 def mood():
-    # JSON dosyasından verileri oku
-    if os.path.exists(app.config['MOOD_FILE']):
-        with open(app.config['MOOD_FILE'], 'r', encoding='utf-8') as f:
-            moods = json.load(f)
-    else:
-        # Dosya yoksa varsayılanları oluştur
-        moods = {
-            "Osman": {"level": 5, "last_updated": datetime.now().strftime("%d.%m.%Y")},
-            "Zeynep": {"level": 5, "last_updated": datetime.now().strftime("%d.%m.%Y")}
-        }
-        with open(app.config['MOOD_FILE'], 'w', encoding='utf-8') as f:
-            json.dump(moods, f, indent=4)
-            
-    return render_template('mood.html', moods=moods)
+    return redirect(url_for('index'))
 
 # Ruh Hali Güncelleme
 @app.route('/update_mood', methods=['POST'])

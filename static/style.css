@@ -1,71 +1,63 @@
-/* Modern ve Romantik Tasarım */
+/* ===== ARADAYIZ - Melankolik Tasarım ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 :root {
-    --primary-color: #ff4d6d;
-    --secondary-color: #ff8fa3;
-    --bg-gradient: linear-gradient(135deg, #fff0f3 0%, #ffccd5 100%);
-    --glass-bg: rgba(255, 255, 255, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.8);
-    --text-color: #590d22;
-    --card-bg: white;
-    --header-text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    --primary-color: #5c7a99;
+    --secondary-color: #8ba4bc;
+    --accent-color: #a8c4d9;
+    --bg-gradient: linear-gradient(135deg, #1a1f2e 0%, #2d3548 30%, #1e2636 70%, #151a26 100%);
+    --glass-bg: rgba(30, 38, 54, 0.65);
+    --glass-border: rgba(92, 122, 153, 0.2);
+    --text-color: #c8d6e5;
+    --text-muted: #7a8a9e;
+    --card-bg: rgba(25, 32, 48, 0.8);
+    --header-text-shadow: 0 2px 20px rgba(92, 122, 153, 0.3);
+    --rain-color: rgba(174, 194, 224, 0.15);
 }
 
-/* Gece Modu Değişkenleri */
+/* Light mode override */
+body:not(.dark-mode) {
+    --primary-color: #5c7a99;
+    --secondary-color: #8ba4bc;
+    --accent-color: #a8c4d9;
+    --bg-gradient: linear-gradient(135deg, #e8eef5 0%, #d1dce8 30%, #c4d2e0 70%, #b8c8d8 100%);
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(92, 122, 153, 0.25);
+    --text-color: #2c3e50;
+    --text-muted: #6b7d8e;
+    --card-bg: rgba(255, 255, 255, 0.7);
+}
+
+/* Dark Mode */
 body.dark-mode {
-    --primary-color: #ff4d6d;
-    --secondary-color: #ff8fa3;
-    --bg-gradient: linear-gradient(135deg, #2b2b2b 0%, #1a1a1a 100%);
-    --glass-bg: rgba(40, 40, 40, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --text-color: #ffe5ec;
-    --card-bg: #333;
-    --header-text-shadow: 2px 2px 4px rgba(255, 77, 109, 0.3);
+    --primary-color: #5c7a99;
+    --secondary-color: #8ba4bc;
+    --accent-color: #6a8fad;
+    --bg-gradient: linear-gradient(135deg, #0d1117 0%, #161b22 30%, #1a2030 70%, #0d1117 100%);
+    --glass-bg: rgba(22, 27, 34, 0.75);
+    --glass-border: rgba(92, 122, 153, 0.15);
+    --text-color: #c8d6e5;
+    --text-muted: #5a6a7e;
+    --card-bg: rgba(22, 27, 34, 0.9);
 }
-
-/* Gece Modu Butonu */
-.theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    /* Kaydırma ile hareket etsin, fixed kalsın */
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 1000;
-    font-size: 1.5rem;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.theme-toggle:hover {
-    transform: rotate(15deg) scale(1.1);
-    background: var(--primary-color);
-    color: white;
-}
-
 
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     background: var(--bg-gradient);
     background-attachment: fixed;
     color: var(--text-color);
     min-height: 100vh;
     overflow-x: hidden;
-    /* Yatay kaymayı engelle */
+    position: relative;
 }
 
 /* Mobil için input font boyutu (iOS zoom engelleme) */
@@ -75,24 +67,66 @@ textarea {
     font-size: 16px !important;
 }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-    /* padding-top: 80px;  Navbar artık sabit olmadığı için gerek yok */
+/* ===== YAĞMUR ANİMASYONU ===== */
+.background-hearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
 }
 
-/* Navbar */
+.raindrop {
+    position: absolute;
+    top: -20px;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--rain-color), transparent);
+    animation: rainFall linear infinite;
+    opacity: 0;
+}
+
+@keyframes rainFall {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh);
+    }
+}
+
+/* Hafif sis efekti */
+.background-hearts::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to top, rgba(21, 26, 38, 0.4), transparent);
+    pointer-events: none;
+}
+
+body:not(.dark-mode) .background-hearts::after {
+    background: linear-gradient(to top, rgba(184, 200, 216, 0.3), transparent);
+}
+
+/* ===== NAVBAR ===== */
 .navbar {
     position: relative;
-    /* Fixed yerine Relative yapıldı */
-    /* top, left, transform iptal edildi veya manuel ayarlandı */
     width: 100%;
-    /* 90% yerine 100% yapıp margin ile kontrol edelim */
     max-width: 600px;
     margin: 0 auto 20px auto;
-    /* Üst boşluk sıfırlandı, alt boşluk 20px */
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
@@ -116,6 +150,7 @@ textarea {
     padding: 5px 10px;
     border-radius: 10px;
     transition: all 0.3s;
+    letter-spacing: 0.5px;
 }
 
 .nav-links a:hover,
@@ -136,78 +171,161 @@ textarea {
     transform: rotate(20deg) scale(1.1);
 }
 
-/* Header */
+/* ===== CONTAINER ===== */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== HEADER ===== */
 header h1 {
-    font-family: 'Dancing Script', cursive;
-    font-size: 3.5rem;
-    margin-bottom: 0.2rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
     color: var(--primary-color);
-    /* Updated for better variable usage */
-    text-shadow: 2px 2px 0px white, 4px 4px 8px rgba(0, 0, 0, 0.1);
-    /* Stroke effect for readability */
+    text-shadow: var(--header-text-shadow);
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 2px;
+    animation: fadeInDown 1.2s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Ay Başlıkları İçin */
 .month-title {
     color: var(--text-color) !important;
-    /* Ensure it follows theme */
     text-shadow: 1px 1px 0px var(--glass-bg), 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
 .heart {
-    color: red;
+    color: var(--secondary-color);
     display: inline-block;
-    animation: heartbeat 1.5s infinite;
+    animation: gentlePulse 4s ease-in-out infinite;
+    font-style: normal;
 }
 
-@keyframes heartbeat {
-    0% {
+@keyframes gentlePulse {
+    0%, 100% {
+        opacity: 0.5;
         transform: scale(1);
     }
-
     50% {
-        transform: scale(1.2);
-    }
-
-    100% {
-        transform: scale(1);
+        opacity: 1;
+        transform: scale(1.05);
     }
 }
 
 .subtitle {
-    font-size: 1.2rem;
-    opacity: 0.8;
+    font-size: 1.15rem;
+    opacity: 0.65;
     margin-bottom: 2rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    animation: fadeIn 2s ease-out 0.5s both;
 }
 
-.logout-link {
-    text-decoration: none;
-    color: var(--primary-color);
-    font-size: 0.9rem;
-    border: 1px solid var(--primary-color);
-    padding: 5px 15px;
-    border-radius: 20px;
-    transition: all 0.3s;
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 0.65; }
 }
 
-.logout-link:hover {
-    background: var(--primary-color);
-    color: white;
-}
-
-/* Glassmorphism Kutular */
+/* ===== GLASSMORPHISM ===== */
 .box-glass {
     background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border);
     border-radius: 20px;
     padding: 2rem;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     margin-bottom: 2rem;
+    animation: fadeInUp 0.8s ease-out both;
 }
 
-/* Sayaç */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== ANA SAYFA - MESAJ ===== */
+.break-message-section {
+    text-align: center;
+    padding: 3rem 2rem;
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.break-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    display: block;
+    animation: gentleFloat 6s ease-in-out infinite;
+    filter: grayscale(30%);
+}
+
+@keyframes gentleFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.break-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    opacity: 0.85;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.break-sub {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Divider */
+.section-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+    margin: 1.5rem auto;
+    opacity: 0.5;
+}
+
+/* ===== SAYAÇ (stil korunuyor, kaldırılsa bile) ===== */
+.counter-section {
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
 .counter-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -216,24 +334,25 @@ header h1 {
 }
 
 .time-box {
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--card-bg);
     border-radius: 15px;
     padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--glass-border);
 }
 
 .time-box span:first-child {
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--primary-color);
 }
 
 .time-box .label {
     font-size: 0.9rem;
-    color: #888;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -241,10 +360,15 @@ header h1 {
 .start-date {
     margin-top: 1rem;
     font-style: italic;
-    opacity: 0.7;
+    opacity: 0.5;
+    color: var(--text-muted);
 }
 
-/* Galeri */
+/* ===== GALERİ ===== */
+.gallery-section {
+    animation: fadeInUp 0.8s ease-out 0.5s both;
+}
+
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -257,13 +381,15 @@ header h1 {
     border-radius: 15px;
     overflow: hidden;
     aspect-ratio: 1;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, filter 0.5s ease;
     cursor: pointer;
+    filter: saturate(0.5) brightness(0.9);
 }
 
 .photo-card:hover {
     transform: scale(1.03);
+    filter: saturate(0.8) brightness(1);
 }
 
 .photo-card img {
@@ -277,19 +403,16 @@ header h1 {
     position: absolute;
     bottom: 10px;
     right: 10px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(30, 38, 54, 0.85);
     width: 35px;
     height: 35px;
     border-radius: 50%;
     display: flex;
-    /* Flexbox ile ortalama */
     align-items: center;
-    /* Dikey ortalama */
     justify-content: center;
-    /* Yatay ortalama */
     font-size: 1.2rem;
     text-decoration: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s, background 0.2s;
     opacity: 0;
     transform: translateY(10px);
@@ -301,7 +424,7 @@ header h1 {
 }
 
 .download-btn:hover {
-    background: white;
+    background: var(--primary-color);
     transform: translateY(0) scale(1.1);
 }
 
@@ -318,11 +441,14 @@ header h1 {
     color: white;
     border-radius: 50px;
     font-weight: 500;
-    transition: background 0.3s;
+    transition: all 0.3s;
+    letter-spacing: 0.5px;
 }
 
 .custom-file-upload:hover {
-    background: #c9184a;
+    background: #4a6680;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(92, 122, 153, 0.3);
 }
 
 input[type="file"] {
@@ -330,8 +456,8 @@ input[type="file"] {
 }
 
 .date-input {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
     color: var(--text-color);
     padding: 8px 15px;
     border-radius: 20px;
@@ -344,8 +470,8 @@ input[type="file"] {
 }
 
 .date-input:focus {
-    background: rgba(255, 255, 255, 0.4);
     border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(92, 122, 153, 0.2);
 }
 
 .input-container {
@@ -354,12 +480,12 @@ input[type="file"] {
 
 .upload-hint {
     font-size: 0.8rem;
-    color: var(--text-color);
+    color: var(--text-muted);
     opacity: 0.8;
     margin-top: 5px;
 }
 
-/* Login Ekranı */
+/* ===== LOGIN ===== */
 .login-body {
     display: flex;
     justify-content: center;
@@ -380,19 +506,19 @@ input[type="file"] {
 .input-group input {
     width: 90%;
     padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--glass-border);
+    background: var(--card-bg);
     border-radius: 10px;
     font-family: inherit;
     font-size: 1rem;
     outline: none;
     transition: all 0.3s;
+    color: var(--text-color);
 }
 
 .input-group input:focus {
-    background: white;
     border-color: var(--primary-color);
-    box-shadow: 0 0 10px rgba(255, 77, 109, 0.2);
+    box-shadow: 0 0 15px rgba(92, 122, 153, 0.2);
 }
 
 .login-btn {
@@ -404,62 +530,33 @@ input[type="file"] {
     border-radius: 10px;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
     margin-top: 10px;
 }
 
 .login-btn:hover {
-    background: #c9184a;
+    background: #4a6680;
 }
 
 .error-msg {
-    color: #d00000;
-    background: rgba(255, 0, 0, 0.1);
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 15px;
     font-size: 0.9rem;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-    header h1 {
-        font-size: 2.5rem;
-    }
-
-    .counter-grid {
-        gap: 0.5rem;
-    }
-
-    .time-box span:first-child {
-        font-size: 1.5rem;
-    }
-
-    .time-box {
-        padding: 0.5rem;
-    }
-
-    /* Mobilde download butonu hep açık olsun */
-    .download-btn {
-        opacity: 1;
-        transform: translateY(0);
-        bottom: 5px;
-        right: 5px;
-        width: 30px;
-        height: 30px;
-        font-size: 1rem;
-    }
-}
-
-/* Footer */
+/* ===== FOOTER ===== */
 .site-footer {
     text-align: center;
     padding: 20px;
     margin-top: 40px;
-    color: var(--text-color);
-    font-size: 0.9rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--glass-border);
     width: 100%;
+    letter-spacing: 1px;
 }
 
 /* ===== BULUŞMA TAKVİMİ ===== */
@@ -468,7 +565,6 @@ input[type="file"] {
     margin-bottom: 1.5rem;
 }
 
-/* Geri Sayım */
 .meeting-countdown {
     display: flex;
     justify-content: center;
@@ -483,7 +579,7 @@ input[type="file"] {
     border-radius: 15px;
     text-align: center;
     min-width: 80px;
-    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+    box-shadow: 0 4px 15px rgba(92, 122, 153, 0.3);
 }
 
 .countdown-item span:first-child {
@@ -505,16 +601,12 @@ input[type="file"] {
     font-style: italic;
 }
 
-/* Takvim */
 .calendar-container {
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--card-bg);
     border-radius: 15px;
     padding: 1.5rem;
     margin: 1.5rem 0;
-}
-
-body.dark-mode .calendar-container {
-    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
 }
 
 .calendar-header {
@@ -543,7 +635,7 @@ body.dark-mode .calendar-container {
 }
 
 .calendar-nav:hover {
-    background: #c9184a;
+    background: #4a6680;
     transform: scale(1.1);
 }
 
@@ -582,11 +674,11 @@ body.dark-mode .calendar-container {
 }
 
 .calendar-day:not(.empty):hover {
-    background: rgba(255, 77, 109, 0.1);
+    background: rgba(92, 122, 153, 0.15);
 }
 
 .calendar-day.today {
-    background: rgba(255, 77, 109, 0.2);
+    background: rgba(92, 122, 153, 0.2);
     font-weight: 700;
     border: 2px solid var(--primary-color);
 }
@@ -595,23 +687,9 @@ body.dark-mode .calendar-container {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     font-weight: 700;
-    animation: pulse 2s infinite;
-    box-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
+    box-shadow: 0 0 15px rgba(92, 122, 153, 0.3);
 }
 
-@keyframes pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
-}
-
-/* Tarih Seçici */
 .meeting-date-picker {
     margin-top: 1.5rem;
     display: flex;
@@ -630,16 +708,11 @@ body.dark-mode .calendar-container {
     padding: 10px 15px;
     border: 2px solid var(--primary-color);
     border-radius: 10px;
-    background: white;
+    background: var(--card-bg);
     color: var(--text-color);
     font-family: inherit;
     font-size: 1rem;
     outline: none;
-}
-
-body.dark-mode .meeting-date-picker input[type="date"] {
-    background: #444;
-    color: white;
 }
 
 .save-meeting-btn {
@@ -655,12 +728,61 @@ body.dark-mode .meeting-date-picker input[type="date"] {
 }
 
 .save-meeting-btn:hover {
-    background: #c9184a;
+    background: #4a6680;
     transform: scale(1.05);
 }
 
-/* Responsive */
+.logout-link {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    border: 1px solid var(--primary-color);
+    padding: 5px 15px;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.logout-link:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
+    header h1 {
+        font-size: 2.2rem;
+    }
+
+    .counter-grid {
+        gap: 0.5rem;
+    }
+
+    .time-box span:first-child {
+        font-size: 1.5rem;
+    }
+
+    .time-box {
+        padding: 0.5rem;
+    }
+
+    .download-btn {
+        opacity: 1;
+        transform: translateY(0);
+        bottom: 5px;
+        right: 5px;
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+    }
+
+    .break-quote {
+        font-size: 1.3rem;
+    }
+
+    .break-icon {
+        font-size: 3rem;
+    }
+
     .meeting-countdown {
         gap: 0.75rem;
     }
@@ -682,4 +804,97 @@ body.dark-mode .meeting-date-picker input[type="date"] {
     .meeting-date-picker {
         flex-direction: column;
     }
+
+    .nav-links {
+        gap: 10px;
+    }
+
+    .nav-links a {
+        font-size: 0.95rem;
+    }
+}
+
+/* ===== Gece Modu Butonu (eski stil korunuyor) ===== */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    font-size: 1.5rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: rotate(15deg) scale(1.1);
+    background: var(--primary-color);
+    color: white;
+}
+
+/* ===== MEKTUP ===== */
+.letter-section {
+    text-align: left;
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.letter-body {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.letter-body p {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 1.05rem;
+    line-height: 1.95;
+    color: var(--text-color);
+    opacity: 0.88;
+    margin-bottom: 1.4rem;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.letter-body p:first-child::first-letter {
+    font-size: 3rem;
+    font-family: 'Playfair Display', serif;
+    float: left;
+    line-height: 0.8;
+    margin: 0.1rem 0.15rem 0 0;
+    color: var(--primary-color);
+}
+
+.letter-final {
+    font-style: italic;
+    opacity: 0.7 !important;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem !important;
+    text-align: center !important;
+}
+
+.letter-arabic {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.35rem !important;
+    text-align: center !important;
+    color: var(--primary-color) !important;
+    opacity: 1 !important;
+    letter-spacing: 1px;
+    margin-top: 0 !important;
+}
+
+/* ===== PLACEHOLDER MENÜ ===== */
+.nav-placeholder {
+    opacity: 0.35 !important;
+    cursor: default !important;
+    pointer-events: none;
+    letter-spacing: 3px;
 }
